@@ -13,20 +13,20 @@ const app = express();
 app.use(cors())
 app.use(express.json())
 
-app.use("/api/auth",userRoutes)
-app.use("/api/messages",messageRoute)
+app.use("/api/auth", userRoutes)
+app.use("/api/messages", messageRoute)
 
 //============================DEPLOYMENT====================
 
 const __dirname1 = path.resolve()
-if(process.env.NODE_ENV==='production'){
-    app.use(express.static(path.join(__dirname1,'/frontend/build')))
-    app.get("*",(req,res)=>{
-        res.sendFile(path.resolve(__dirname1,"frontend","build","index.html"))
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname1, '/frontend/build')))
+    app.get("*", (req, res) => {
+        res.sendFile(path.resolve(__dirname1, "frontend", "build", "index.html"))
     })
 }
-else{
-    app.get("/",(req,res)=>{
+else {
+    app.get("/", (req, res) => {
         res.send("API is running...")
     })
 }
@@ -34,7 +34,12 @@ else{
 //============================DEPLOYMENT====================
 
 
-mongoose.connect(process.env.MONGO_URL).then(() => {
+mongoose.connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    serverSelectionTimeoutMS: 30000, // 30 seconds
+    socketTimeoutMS: 45000, // 45 seconds
+}).then(() => {
     console.log("Data base connected")
 }).catch(err => {
     console.log(err.message)
@@ -44,24 +49,24 @@ const server = app.listen(process.env.PORT, () => {
     console.log(`Server connected to ${process.env.PORT}`)
 })
 
-const io = socket(server,{
-    cors:{
-        origin:"https://chat-app-8h57.onrender.com",
+const io = socket(server, {
+    cors: {
+        origin: "https://chat-app-8h57.onrender.com",
         credentials: true,
     }
 })
 
 global.onlineUsers = new Map();
 
-io.on("connection",(socket)=>{
+io.on("connection", (socket) => {
     global.chatSocket = socket;
-    socket.on("add-user",(userId)=>{
+    socket.on("add-user", (userId) => {
         onlineUsers.set(userId, socket.id);
     })
-    socket.on("send-msg",data=>{
+    socket.on("send-msg", data => {
         const sendUserSocket = onlineUsers.get(data.to);
-        if(sendUserSocket){
-            socket.to(sendUserSocket).emit('msg-recieve',data.message)
+        if (sendUserSocket) {
+            socket.to(sendUserSocket).emit('msg-recieve', data.message)
         }
     })
 })
