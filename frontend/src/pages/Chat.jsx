@@ -27,7 +27,7 @@ export default function Chat() {
             }
         }
         runThis()
-    }, []);
+    }, [navigate]);
     
     useEffect(() => {
         if (currentUser) {
@@ -48,7 +48,7 @@ export default function Chat() {
             }
         }
         runThiss()
-    }, [currentUser]);
+    }, [currentUser, navigate]);
     const handleChatChange = (chat) => {
         setCurrentChat(chat);
     };

@@ -22,7 +22,7 @@ function ChatContainer({ currentChat, currentUser, socket }) {
             }
         }
         runThis()
-    }, [currentChat])
+    }, [currentChat, currentUser._id])
     const handleSendMsg = async (msg) => {
         await axios.post(sendMessageRoute, {
             from: currentUser._id,
@@ -45,7 +45,7 @@ function ChatContainer({ currentChat, currentUser, socket }) {
                 setArrivalMessage({ fromSelf: false, message: msg })
             })
         }
-    }, [])
+    }, [socket])
 
     useEffect(() => {
         arrivalMessage && setMessages((prev) => [...prev, arrivalMessage])

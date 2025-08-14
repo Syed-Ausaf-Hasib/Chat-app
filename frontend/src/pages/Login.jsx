@@ -26,7 +26,7 @@ function Login() {
                 navigate("/");
         }
         runThis()
-    }, []);
+    }, [navigate]);
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (handleValidation()) {

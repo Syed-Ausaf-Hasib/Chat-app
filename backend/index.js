@@ -18,40 +18,42 @@ app.use("/api/messages", messageRoute)
 
 //============================DEPLOYMENT====================
 
-const __dirname1 = path.resolve()
-if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname1, '/frontend/build')))
-    app.get("*", (req, res) => {
-        res.sendFile(path.resolve(__dirname1, "frontend", "build", "index.html"))
-    })
-}
-else {
-    app.get("/", (req, res) => {
-        res.send("API is running...")
-    })
-}
+// const __dirname1 = path.resolve()
+// if (process.env.NODE_ENV === 'production') {
+//     app.use(express.static(path.join(__dirname1, '/frontend/build')))
+//     app.get("*", (req, res) => {
+//         res.sendFile(path.resolve(__dirname1, "frontend", "build", "index.html"))
+//     })
+// }
+// else {
+//     app.get("/", (req, res) => {
+//         res.send("API is running...")
+//     })
+// }
 
 //============================DEPLOYMENT====================
 
 
 mongoose.connect(process.env.MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
     serverSelectionTimeoutMS: 30000, // 30 seconds
-    socketTimeoutMS: 45000, // 45 seconds
-}).then(() => {
-    console.log("Data base connected")
-}).catch(err => {
-    console.log(err.message)
+    socketTimeoutMS: 45000           // 45 seconds
 })
+.then(() => {
+    console.log("Database connected");
+})
+.catch(err => {
+    console.log("Database connection error:", err.message);
+});
 
-const server = app.listen(process.env.PORT, () => {
-    console.log(`Server connected to ${process.env.PORT}`)
+const PORT = process.env.PORT || 5000;
+
+const server = app.listen(PORT, () => {
+    console.log(`Server connected to ${PORT}`)
 })
 
 const io = socket(server, {
     cors: {
-        origin: "https://chat-app-8h57.onrender.com",
+        origin: "http://localhost:3000",
         credentials: true,
     }
 })
