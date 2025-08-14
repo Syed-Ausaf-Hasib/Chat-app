@@ -2,18 +2,17 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import loader from "../assets/loader.gif";
-import logo from "../assets/logo.svg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { setAvatarRoute } from "../utils/APIRoutes";
 
 function SetAvatar() {
-  const api = "https://api.multiavatar.com";
+  // const api = "https://api.multiavatar.com";
   const navigate = useNavigate();
-  const [avatars, setAvatars] = useState([]);
+  // const [avatars, setAvatars] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedAvatar, setSelectedAvatar] = useState(undefined);
+  const selectedAvatar = undefined;
 
   const toastOptions = useMemo(() => ({
     position: "bottom-right",
@@ -55,30 +54,34 @@ function SetAvatar() {
     }
   };
 
-  useEffect(() => { 
-    const fetchAvatars = async () => { 
-      try{
-        const data = []; 
-        for (let i = 0; i < 4; i++) { 
-          const image = await axios.get(
-            `${api}/${Math.round(Math.random() * 1000)}`,
-            { responseType: 'arraybuffer', }
-          ); 
-          const buffer = Buffer.from(image.data); 
-          data.push(buffer.toString('base64')); 
-          await new Promise(resolve => setTimeout(resolve, 1000)); 
-        } 
-        setAvatars(data);
-      }
-      catch(error) {
-        toast.error("Failed to load avatars. Please try again later.", toastOptions);
-      }
-      finally {
-        setIsLoading(false);
-      }
-    }
-   fetchAvatars();  
-  }, [api, toastOptions]); // added api as dependency
+  // useEffect(() => { 
+  //   const fetchAvatars = async () => { 
+  //     try{
+  //       const data = []; 
+  //       for (let i = 0; i < 4; i++) { 
+  //         const image = await axios.get(
+  //           `${api}/${Math.round(Math.random() * 1000)}`,
+  //           { responseType: 'arraybuffer', }
+  //         ); 
+  //         const buffer = Buffer.from(image.data); 
+  //         data.push(buffer.toString('base64')); 
+  //         await new Promise(resolve => setTimeout(resolve, 1000)); 
+  //       } 
+  //       setAvatars(data);
+  //     }
+  //     catch(error) {
+  //       toast.error("Failed to load avatars. Please try again later.", toastOptions);
+  //     }
+  //     finally {
+  //       setIsLoading(false);
+  //     }
+  //   }
+  //  fetchAvatars();  
+  // }, [api, toastOptions]); // added api as dependency
+
+  setTimeout(() => {
+    setIsLoading(false);
+  }, 3000);
 
   return (
     <>
@@ -93,7 +96,7 @@ function SetAvatar() {
           </div>
 
           {/* This never runs because avatars is empty due to depricated api */}
-          <div className="avatars">
+          {/* <div className="avatars">
             {avatars.map((avatar, index) => (
               <div
                 key={index}
@@ -103,12 +106,12 @@ function SetAvatar() {
                 onClick={() => setSelectedAvatar(index)}
               >
                 <img
-                  src={logo}
+                  src=""
                   alt="avatar"
                 />
               </div>
             ))}
-          </div>
+          </div> */}
 
           {/* Loader */}
           <div
@@ -116,7 +119,7 @@ function SetAvatar() {
                 display: "flex",
                 alignItems: "center",
                 gap: "16px",
-                marginTop: "-60px",
+                marginTop: "-10px",
                 marginLeft: "auto",
                 marginRight: "auto",
                 color: "#4b5563" // gray-600
