@@ -10,6 +10,8 @@ const path = require("path")
 
 const app = express();
 
+app.get('/', (req, res) => res.send('Server is running!'))
+
 app.use(cors())
 app.use(express.json())
 
@@ -53,7 +55,7 @@ const server = app.listen(PORT, () => {
 
 const io = socket(server, {
     cors: {
-        origin: "http://localhost:3000",
+        origin: "https://chat-app-bz5t.vercel.app",
         credentials: true,
     }
 })
