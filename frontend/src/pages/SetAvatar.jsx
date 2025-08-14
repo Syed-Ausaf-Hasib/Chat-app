@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import loader from "../assets/loader.gif";
+import logo from "../assets/logo.svg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
@@ -37,7 +38,7 @@ function SetAvatar() {
       try {
         const { data } = await axios.post(
           `${setAvatarRoute}/${user._id}`,
-          { image: avatars[selectedAvatar] }
+          { image: "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgZmlsbD0ibm9uZSI+PHBhdGggZmlsbD0iI0IyMEYwMyIgZD0iTTE2IDNhMTMgMTMgMCAxIDAgMTMgMTNBMTMuMDE1IDEzLjAxNSAwIDAgMCAxNiAzbTAgMjRhMTEgMTEgMCAxIDEgMTEtMTEgMTEuMDEgMTEuMDEgMCAwIDEtMTEgMTEiLz48cGF0aCBmaWxsPSIjQjIwRjAzIiBkPSJNMTcuMDM4IDE4LjYxNUgxNC44N0wxNC41NjMgOS41aDIuNzgzem0tMS4wODQgMS40MjdxLjY2IDAgMS4wNTcuMzg4LjQwNy4zODkuNDA3Ljk5NCAwIC41OTYtLjQwNy45ODQtLjM5Ny4zOS0xLjA1Ny4zODktLjY1IDAtMS4wNTYtLjM4OS0uMzk4LS4zODktLjM5OC0uOTg0IDAtLjU5Ny4zOTgtLjk4NS40MDYtLjM5NyAxLjA1Ni0uMzk3Ii8+PC9zdmc+" }
         );
 
         if (data.isSet) {
@@ -54,43 +55,30 @@ function SetAvatar() {
     }
   };
 
-  useEffect(() => {
-  const fetchAvatars = async () => {
-    try {
-      const avatarPromises = Array.from({ length: 4 }, () =>
-        axios.get(`${api}/${Math.floor(Math.random() * 1000)}`, {
-          responseType: "arraybuffer",
-        })
-      );
-
-      console.log("Fetching avatars...");
-
-      const responses = await Promise.all(avatarPromises);
-
-      // Convert each response directly to base64
-      const data = responses.map((res) => {
-        const base64 = btoa(
-          new Uint8Array(res.data).reduce(
-            (data, byte) => data + String.fromCharCode(byte),
-            ""
-          )
-        );
-        return `data:image/svg+xml;base64,${base64}`;
-      });
-
-      setAvatars(data);
-    } catch (err) {
-      console.error("Error fetching avatars:", err);
-      toast.error("Failed to load avatars", toastOptions);
-    } finally {
-      setIsLoading(false);
+  useEffect(() => { 
+    const fetchAvatars = async () => { 
+      try{
+        const data = []; 
+        for (let i = 0; i < 4; i++) { 
+          const image = await axios.get(
+            `${api}/${Math.round(Math.random() * 1000)}`,
+            { responseType: 'arraybuffer', }
+          ); 
+          const buffer = Buffer.from(image.data); 
+          data.push(buffer.toString('base64')); 
+          await new Promise(resolve => setTimeout(resolve, 1000)); 
+        } 
+        setAvatars(data);
+      }
+      catch(error) {
+        toast.error("Failed to load avatars. Please try again later.", toastOptions);
+      }
+      finally {
+        setIsLoading(false);
+      }
     }
-  };
-
-  fetchAvatars();
-}, [api, toastOptions]);
-
-
+   fetchAvatars();  
+  }, [api]); // added api as dependency
 
   return (
     <>
@@ -103,6 +91,8 @@ function SetAvatar() {
           <div className="title-container">
             <h1>Pick an Avatar as your profile picture</h1>
           </div>
+
+          {/* This never runs because avatars is empty due to depricated api */}
           <div className="avatars">
             {avatars.map((avatar, index) => (
               <div
@@ -113,14 +103,50 @@ function SetAvatar() {
                 onClick={() => setSelectedAvatar(index)}
               >
                 <img
-                  src="../assets/logo.svg"
+                  src={logo}
                   alt="avatar"
                 />
               </div>
             ))}
           </div>
+
+          {/* Loader */}
+          <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "16px",
+                marginTop: "-60px",
+                marginLeft: "auto",
+                marginRight: "auto",
+                color: "#4b5563" // gray-600
+              }}
+            >
+              <span
+                style={{
+                  width: "60px",
+                  height: "60px",
+                  borderRadius: "50%",
+                  border: "4px solid #4e0eff",
+                  borderTop: "3px solid transparent",
+                  animation: "spin 1s linear infinite",
+                  display: "inline-block"
+                }}
+              ></span>
+
+              {/* Add keyframes in a <style> tag */}
+              <style>
+                {`
+                  @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                  }
+                `}
+              </style>
+            </div>
+
           <button onClick={setProfilePicture} className="submit-btn">
-            Set as Profile Picture
+            Continue without setting avatar
           </button>
           <ToastContainer />
         </Container>
