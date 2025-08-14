@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import loader from "../assets/loader.gif";
@@ -15,13 +15,13 @@ function SetAvatar() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedAvatar, setSelectedAvatar] = useState(undefined);
 
-  const toastOptions = {
+  const toastOptions = useMemo(() => ({
     position: "bottom-right",
     autoClose: 8000,
     pauseOnHover: true,
     draggable: true,
-    theme: "dark",
-  };
+    theme: "dark"
+  }), []);
 
   useEffect(() => {
     if (!localStorage.getItem("chat-app-user")) {
@@ -78,7 +78,7 @@ function SetAvatar() {
       }
     }
    fetchAvatars();  
-  }, [api]); // added api as dependency
+  }, [api, toastOptions]); // added api as dependency
 
   return (
     <>
