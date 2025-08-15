@@ -28,11 +28,12 @@ const Container = styled.div`
   align-items: center;
   color: white;
   flex-direction: column;
+  background-color: rgba(59, 40, 30, 0.3); /* Deep dark brown, slightly transparent */
   img {
     height: 20rem;
   }
   span {
-    color: #4e0eff;
+    color: #f5b039;
   }
 `;
 

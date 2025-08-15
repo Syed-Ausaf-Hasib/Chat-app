@@ -59,7 +59,7 @@ function ChatContainer({ currentChat, currentUser, socket }) {
             <div className="chat-header">
                 <div className="user-details">
                     <div className="avatar">
-                        <img src={`data:image/svg+xml;base64,${currentChat.avatarImage}`} alt="Avatar" />
+                        <img draggable={false} src={`data:image/svg+xml;base64,${currentChat.avatarImage}`} alt="Avatar" />
                     </div>
                     <div className="username">
                         <h3>
@@ -94,14 +94,19 @@ const Container = styled.div`
   grid-template-rows: 10% 80% 10%;
   gap: 0.1rem;
   overflow: hidden;
+  background-color: rgba(59, 40, 30, 0.3); /* Deep dark brown, slightly transparent */
+
   @media screen and (min-width: 720px) and (max-width: 1080px) {
     grid-template-rows: 15% 70% 15%;
   }
+
   .chat-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 2rem;
+    padding: 2rem 2rem;
+    background-color: #120e0bff; /* Transparent rich brown */
+    border-bottom: 0.1rem solid #a67c52; /* Warm brown border */
     .user-details {
       display: flex;
       align-items: center;
@@ -113,25 +118,29 @@ const Container = styled.div`
       }
       .username {
         h3 {
-          color: white;
+          color: #f5b039; /* Gold accent */
         }
       }
     }
   }
+
   .chat-messages {
+    margin-top: 0.5rem;
     padding: 1rem 2rem;
     display: flex;
     flex-direction: column;
     gap: 1rem;
     overflow: auto;
+
     &::-webkit-scrollbar {
       width: 0.2rem;
       &-thumb {
-        background-color: #ffffff39;
+        background-color: #f5b03980; /* Gold scrollbar */
         width: 0.1rem;
         border-radius: 1rem;
       }
     }
+
     .message {
       display: flex;
       align-items: center;
@@ -141,25 +150,40 @@ const Container = styled.div`
         padding: 1rem;
         font-size: 1.1rem;
         border-radius: 1rem;
-        color: #d1d1d1;
+        color: #f5f2e7; /* Light cream text */
+        border: 0.1rem solid #120e0bff; /* Warm brown border */
         @media screen and (min-width: 720px) and (max-width: 1080px) {
           max-width: 70%;
         }
       }
     }
+
     .sended {
       justify-content: flex-end;
       .content {
-        background-color: #4f04ff21;
+        background-color: #120e0bff; /* Warm brown */
+        color: #fff8dc; /* Off-white text */
+        &:hover {
+          background-color: #2d231bff; /* Gold hover */
+          // color: #1a1410; /* Dark text */
+          transition: background-color 0.3s ease;
+        }
       }
     }
+
     .recieved {
       justify-content: flex-start;
       .content {
-        background-color: #9900ff20;
+        background-color: #120e0bff; /* Warm brown */
+        color: #fff8dc; /* Off-white text */
+        &:hover {
+          background-color: #2d231bff; /* Gold hover */
+          // color: #1a1410; /* Dark text */
+          transition: background-color 0.3s ease;
+        }
       }
-    }
   }
 `;
+
 
 export default ChatContainer

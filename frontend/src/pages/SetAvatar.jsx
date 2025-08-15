@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import loader from "../assets/loader.gif";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
+import { Buffer } from "buffer";
 import { setAvatarRoute } from "../utils/APIRoutes";
 
 function SetAvatar() {
-  // const api = "https://api.multiavatar.com";
+  const api = "https://api.dicebear.com/7.x/bottts/svg?seed=";
   const navigate = useNavigate();
-  // const [avatars, setAvatars] = useState([]);
+  const [avatars, setAvatars] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const selectedAvatar = undefined;
+  const [selectedAvatar, setSelectedAvatar] = useState(undefined);
 
   const toastOptions = useMemo(() => ({
     position: "bottom-right",
@@ -29,7 +29,7 @@ function SetAvatar() {
   }, [navigate]);
 
   const setProfilePicture = async () => {
-    if (selectedAvatar !== undefined) {
+    if (selectedAvatar === undefined) {
       toast.error("Please select an avatar", toastOptions);
     } else {
       const user = JSON.parse(localStorage.getItem("chat-app-user"));
@@ -37,7 +37,7 @@ function SetAvatar() {
       try {
         const { data } = await axios.post(
           `${setAvatarRoute}/${user._id}`,
-          { image: "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgZmlsbD0ibm9uZSI+PHBhdGggZmlsbD0iI0IyMEYwMyIgZD0iTTE2IDNhMTMgMTMgMCAxIDAgMTMgMTNBMTMuMDE1IDEzLjAxNSAwIDAgMCAxNiAzbTAgMjRhMTEgMTEgMCAxIDEgMTEtMTEgMTEuMDEgMTEuMDEgMCAwIDEtMTEgMTEiLz48cGF0aCBmaWxsPSIjQjIwRjAzIiBkPSJNMTcuMDM4IDE4LjYxNUgxNC44N0wxNC41NjMgOS41aDIuNzgzem0tMS4wODQgMS40MjdxLjY2IDAgMS4wNTcuMzg4LjQwNy4zODkuNDA3Ljk5NCAwIC41OTYtLjQwNy45ODQtLjM5Ny4zOS0xLjA1Ny4zODktLjY1IDAtMS4wNTYtLjM4OS0uMzk4LS4zODktLjM5OC0uOTg0IDAtLjU5Ny4zOTgtLjk4NS40MDYtLjM5NyAxLjA1Ni0uMzk3Ii8+PC9zdmc+" }
+          { image: avatars[selectedAvatar] }
         );
 
         if (data.isSet) {
@@ -54,108 +54,62 @@ function SetAvatar() {
     }
   };
 
-  // useEffect(() => { 
-  //   const fetchAvatars = async () => { 
-  //     try{
-  //       const data = []; 
-  //       for (let i = 0; i < 4; i++) { 
-  //         const image = await axios.get(
-  //           `${api}/${Math.round(Math.random() * 1000)}`,
-  //           { responseType: 'arraybuffer', }
-  //         ); 
-  //         const buffer = Buffer.from(image.data); 
-  //         data.push(buffer.toString('base64')); 
-  //         await new Promise(resolve => setTimeout(resolve, 1000)); 
-  //       } 
-  //       setAvatars(data);
-  //     }
-  //     catch(error) {
-  //       toast.error("Failed to load avatars. Please try again later.", toastOptions);
-  //     }
-  //     finally {
-  //       setIsLoading(false);
-  //     }
-  //   }
-  //  fetchAvatars();  
-  // }, [api, toastOptions]); // added api as dependency
+  useEffect(() => {
+    const fetchAvatars = async () => {
+      const data = [];
+      for (let i = 0; i < 5; i++) {
+        const response = await axios.get(`${api}/${Math.round(Math.random() * 1000)}`);
+        const buffer = Buffer.from(response.data);
+        data.push(buffer.toString("base64"));
+      }
+      setAvatars(data);
+      setIsLoading(false);
+    };
 
-  setTimeout(() => {
-    setIsLoading(false);
-  }, 3000);
+    fetchAvatars();
+  }, []);
 
   return (
     <>
-      {isLoading ? (
-        <Container>
-          <img src={loader} alt="loader" className="loader" />
-        </Container>
-      ) : (
-        <Container>
-          <div className="title-container">
-            <h1>Pick an Avatar as your profile picture</h1>
-          </div>
-
-          {/* This never runs because avatars is empty due to depricated api */}
-          {/* <div className="avatars">
-            {avatars.map((avatar, index) => (
-              <div
-                key={index}
-                className={`avatar ${
-                  selectedAvatar === index ? "selected" : ""
-                }`}
-                onClick={() => setSelectedAvatar(index)}
-              >
-                <img
-                  src=""
-                  alt="avatar"
-                />
-              </div>
-            ))}
-          </div> */}
-
-          {/* Loader */}
-          <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "16px",
-                marginTop: "-10px",
-                marginLeft: "auto",
-                marginRight: "auto",
-                color: "#4b5563" // gray-600
-              }}
-            >
-              <span
-                style={{
-                  width: "60px",
-                  height: "60px",
-                  borderRadius: "50%",
-                  border: "4px solid #4e0eff",
-                  borderTop: "3px solid transparent",
-                  animation: "spin 1s linear infinite",
-                  display: "inline-block"
-                }}
-              ></span>
-
-              {/* Add keyframes in a <style> tag */}
-              <style>
-                {`
-                  @keyframes spin {
-                    0% { transform: rotate(0deg); }
-                    100% { transform: rotate(360deg); }
-                  }
-                `}
-              </style>
+      {
+        isLoading ? (
+          <Container>
+            <div className="chat-loader">
+              <span></span>
+              <span></span>
+              <span></span>
             </div>
-
-          <button onClick={setProfilePicture} className="submit-btn">
-            Continue without setting avatar
-          </button>
-          <ToastContainer />
-        </Container>
-      )}
+          </Container>
+        ) : (
+          <Container>
+            <div className="title-container">
+              <h1>
+                Pick an Avatar as your profile picture
+              </h1>
+            </div>
+            <div className="avatars">
+              {
+                avatars.map((avatar, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className={`avatar ${
+                        selectedAvatar === index ? "selected" : ""
+                      }`}
+                    >
+                      <img src={`data:image/svg+xml;base64,${avatar}`} alt="avatar" onClick={() => setSelectedAvatar(index)} />
+                    </div>
+                  )
+                })
+              }
+            </div>
+            <button className='submit-btn' onClick={setProfilePicture}>Set as Profile Picture</button>
+          </Container>
+        )
+      }
+      <ToastContainer />
     </>
-  );
+  )
 }
 
 export default SetAvatar;
@@ -166,19 +120,47 @@ const Container = styled.div`
   align-items: center;
   flex-direction: column;
   gap: 3rem;
-  background-color: #131324;
+  background-color: #2a1d16; /* Deep dark brown */
   height: 100vh;
   width: 100vw;
 
-  .loader {
-    max-inline-size: 100%;
+  .chat-loader {
+    display: flex;
+    gap: 5rem;
+  }
+
+  .chat-loader span {
+    display: block;
+    width: 80px;
+    height: 80px;
+    background-color: #f5b039;
+    border-radius: 50%;
+    animation: bounce 0.6s infinite alternate;
+  }
+
+  .chat-loader span:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  .chat-loader span:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+
+  @keyframes bounce {
+    to {
+      opacity: 0.3;
+      transform: translateY(-6px);
+    }
   }
 
   .title-container {
     h1 {
-      color: white;
+      color: #f5b039; /* Gold accent */
+      user-select: none;
+      cursor: default;
     }
   }
+
   .avatars {
     display: flex;
     gap: 2rem;
@@ -190,20 +172,28 @@ const Container = styled.div`
       display: flex;
       justify-content: center;
       align-items: center;
-      transition: 0.5s ease-in-out;
+      transition: border-color 0.3s ease, transform 0.3s ease;
       cursor: pointer;
+
       img {
         height: 6rem;
-        transition: 0.5s ease-in-out;
+        transition: transform 0.3s ease;
+      }
+
+      &:hover {
+        border: 0.4rem solid #f5b039; /* Gold hover border */
+        transform: scale(1.05); /* Slight zoom on hover */
       }
     }
+
     .selected {
-      border: 0.4rem solid #4e0eff;
+      border: 0.4rem solid #f5b039; /* Gold selected border */
     }
   }
+
   .submit-btn {
-    background-color: #4e0eff;
-    color: white;
+    background-color: #a67c52; /* Warm brown */
+    color: #fff8dc; /* Off-white text */
     padding: 1rem 2rem;
     border: none;
     font-weight: bold;
@@ -211,8 +201,11 @@ const Container = styled.div`
     border-radius: 0.4rem;
     font-size: 1rem;
     text-transform: uppercase;
+    transition: background-color 0.3s ease, color 0.3s ease;
+
     &:hover {
-      background-color: #4e0eff;
+      background-color: #f5b039; /* Gold hover */
+      color: #1a1410; /* Dark text on gold */
     }
   }
 `;

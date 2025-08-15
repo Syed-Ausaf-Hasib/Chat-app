@@ -77,13 +77,22 @@ const Container = styled.div`
   justify-content: center;
   gap: 1rem;
   align-items: center;
-  background-color: #131324;
+  background: linear-gradient(135deg, #141010ff, #120e0bff); /* smooth dark gradient */
+  color: #eaeaea;
+
   .container {
     height: 85vh;
     width: 85vw;
-    background-color: #00000076;
+    background: rgba(0, 0, 0, 0.5); /* glassy effect */
+    border-radius: 1rem;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     display: grid;
     grid-template-columns: 25% 75%;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
     @media screen and (min-width: 720px) and (max-width: 1080px) {
       grid-template-columns: 35% 65%;
     }

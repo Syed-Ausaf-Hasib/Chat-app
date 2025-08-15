@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import Logo from "../assets/logo.svg";
+import Logo from "../assets/logo.png";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
@@ -77,8 +77,8 @@ function Register() {
             <FormContainer>
                 <form onSubmit={handleSubmit}>
                     <div className="brand">
-                        <img src={Logo} alt="Logo" />
-                        <h1>Ausaf</h1>
+                        <img draggable={false} src={Logo} alt="Logo" />
+                        <h1>Talksy</h1>
                     </div>
                     <input type="text" placeholder='Username' name='username' onChange={handleChange} />
                     <input type="email" placeholder='Email' name='email' onChange={handleChange} />
@@ -101,7 +101,13 @@ const FormContainer = styled.div`
   justify-content: center;
   gap: 1rem;
   align-items: center;
-  background-color: #131324;
+  background-color: #2a1d16; /* Deep dark brown */
+
+  h1{
+   cursor: default;
+   user-select: none;
+  }
+
   .brand {
     display: flex;
     align-items: center;
@@ -111,7 +117,7 @@ const FormContainer = styled.div`
       height: 5rem;
     }
     h1 {
-      color: white;
+      color: #f5b039; /* Gold accent */
       text-transform: uppercase;
     }
   }
@@ -120,26 +126,33 @@ const FormContainer = styled.div`
     display: flex;
     flex-direction: column;
     gap: 2rem;
-    background-color: #00000076;
+    background-color: #120e0bff; /* Transparent rich brown */
     border-radius: 2rem;
     padding: 3rem 5rem;
+    padding-top: 2.5rem;
   }
+
   input {
     background-color: transparent;
     padding: 1rem;
-    border: 0.1rem solid #4e0eff;
+    border: 0.1rem solid #a67c52; /* Warm brown border */
     border-radius: 0.4rem;
-    color: white;
+    color: #f5f2e7; /* Light cream text */
     width: 100%;
     font-size: 1rem;
     &:focus {
-      border: 0.1rem solid #997af0;
+      border: 0.1rem solid #f5b039; /* Gold focus */
       outline: none;
     }
+    &:hover{
+     border: 0.1rem solid #f5b039; /* Gold hover */
+     transition: border-color 0.3s ease;
+    }
   }
+
   button {
-    background-color: #4e0eff;
-    color: white;
+    background-color: #a67c52; /* Warm brown */
+    color: #fff8dc; /* Off-white text */
     padding: 1rem 2rem;
     border: none;
     font-weight: bold;
@@ -147,17 +160,23 @@ const FormContainer = styled.div`
     border-radius: 0.4rem;
     font-size: 1rem;
     text-transform: uppercase;
+    transition: background-color 0.3s ease;
     &:hover {
-      background-color: #4e0eff;
+      background-color: #f5b039; /* Gold hover */
+      color: #1a1410; /* Dark text on gold */
     }
   }
+
   span {
-    color: white;
+    color: #f5f2e7; /* Light cream text */
     text-transform: uppercase;
     a {
-      color: #4e0eff;
+      color: #f5b039; /* Gold accent links */
       text-decoration: none;
       font-weight: bold;
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 `;
