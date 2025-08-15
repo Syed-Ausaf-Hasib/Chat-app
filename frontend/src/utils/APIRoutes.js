@@ -1,4 +1,5 @@
-export const host ="https://chat-app-gamma-cyan-89.vercel.app";
+export const host ="https://chat-app-1-v1qz.onrender.com"
+// export const host ="https://chat-app-gamma-cyan-89.vercel.app";
 // export const host = "http://localhost:5000";
 export const registerRoute = `${host}/api/auth/register`
 export const loginRoute = `${host}/api/auth/login`
