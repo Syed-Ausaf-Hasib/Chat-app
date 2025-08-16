@@ -175,6 +175,24 @@ const Container = styled.div`
       }
     }
   }
+@media screen and (max-width: 720px) {
+  grid-template-columns: 10% 90%;
+  padding: 0 1rem;
+
+  .input-container {
+    gap: 1rem;
+    input {
+      font-size: 1rem;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      svg {
+        font-size: 1.5rem;
+      }
+    }
+  }
+  
+}
 `;
 
 

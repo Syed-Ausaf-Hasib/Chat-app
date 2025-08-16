@@ -35,6 +35,18 @@ const Container = styled.div`
   span {
     color: #f5b039;
   }
+    @media screen and (max-width: 720px) {
+      img {
+        height: 12rem;
+      }
+        h1 {  
+        font-size: 1.5rem;
+      }
+      h3 {
+      span {
+        font-size: 1rem;
+      }
+}
 `;
 
 export default Welcome;

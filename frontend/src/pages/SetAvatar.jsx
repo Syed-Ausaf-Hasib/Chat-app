@@ -86,6 +86,8 @@ function SetAvatar() {
               <h1>
                 Pick an Avatar as your profile picture
               </h1>
+              <br />
+              <h3>Refresh for more options</h3>
             </div>
             <div className="avatars">
               {
@@ -154,11 +156,21 @@ const Container = styled.div`
   }
 
   .title-container {
+   display : flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     h1 {
       color: #f5b039; /* Gold accent */
       user-select: none;
       cursor: default;
     }
+      h3{
+      color: #f5b039; /* Gold accent */
+      user-select: none;
+      cursor: default;
+      margin-bottom: -1rem;
+      }
   }
 
   .avatars {

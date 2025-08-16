@@ -178,4 +178,44 @@ const Container = styled.div`
       }
     }
   }
+    @media screen and (max-width: 720px) {
+      .brand{
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        padding : 10px 0 10px 0px;
+        }
+      .brand img {
+        height: 2rem;
+      }
+      .brand h3 {
+        font-size: 0.9rem;
+      }
+      .contacts .contact {
+        width: 90%;
+        flex-direction: column;
+        min-height: 4rem;
+        gap: 0.5rem;
+        padding: 0.5rem;
+        .avatar img {
+          height: 2rem;
+          margin-bottom: -0.2rem;
+        }
+        .username h3 {
+          font-size: 0.7rem;
+        }
+      }
+
+      .current-user {
+      flex-direction: column;
+        gap: 1rem;
+        .avatar img {
+          height: 2.3rem;
+          margin-bottom: -0.6rem;
+        }
+        .username h2 {
+          font-size: 1rem;
+        }
+  }
+}
 `;

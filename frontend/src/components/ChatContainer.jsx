@@ -145,16 +145,13 @@ const Container = styled.div`
       display: flex;
       align-items: center;
       .content {
-        max-width: 40%;
+        max-width: 80%;
         overflow-wrap: break-word;
         padding: 1rem;
         font-size: 1.1rem;
         border-radius: 1rem;
         color: #f5f2e7; /* Light cream text */
         border: 0.1rem solid #120e0bff; /* Warm brown border */
-        @media screen and (min-width: 720px) and (max-width: 1080px) {
-          max-width: 70%;
-        }
       }
     }
 
@@ -174,15 +171,29 @@ const Container = styled.div`
     .recieved {
       justify-content: flex-start;
       .content {
-        background-color: #120e0bff; /* Warm brown */
+        background-color: #2d231bff; /* Warm brown */
         color: #fff8dc; /* Off-white text */
         &:hover {
-          background-color: #2d231bff; /* Gold hover */
+          background-color: #120e0bff; /* Gold hover */
           // color: #1a1410; /* Dark text */
           transition: background-color 0.3s ease;
         }
       }
   }
+@media screen and (max-width: 720px) {
+  .chat-header {
+    padding: 1rem;
+    .user-details {
+      gap: 0.5rem;
+      .avatar img {
+        height: 2.5rem;
+      }
+      .username h3 {
+        font-size: 1rem;
+      }
+    }
+  }
+}
 `;
 
 
