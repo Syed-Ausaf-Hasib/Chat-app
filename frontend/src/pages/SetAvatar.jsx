@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { Buffer } from "buffer";
 import { setAvatarRoute } from "../utils/APIRoutes";
+import { RefreshCcw } from "lucide-react";
 
 function SetAvatar() {
   const api = "https://api.dicebear.com/7.x/bottts/svg?seed=";
@@ -13,6 +14,7 @@ function SetAvatar() {
   const [avatars, setAvatars] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedAvatar, setSelectedAvatar] = useState(undefined);
+  const [refresher, setRefresher] = useState(false);
 
   const toastOptions = useMemo(() => ({
     position: "bottom-right",
@@ -67,7 +69,7 @@ function SetAvatar() {
     };
 
     fetchAvatars();
-  }, []);
+  }, [refresher]);
 
   return (
     <>
@@ -86,8 +88,8 @@ function SetAvatar() {
               <h1>
                 Pick an Avatar as your profile picture
               </h1>
-              <br />
-              <h3>Refresh for more options</h3>
+              {/* <br /> */}
+              {/* <h3>Refresh for more options</h3> */}
             </div>
             <div className="avatars">
               {
@@ -105,7 +107,10 @@ function SetAvatar() {
                 })
               }
             </div>
-            <button className='submit-btn' onClick={setProfilePicture}>Set as Profile Picture</button>
+            <div className="actions">
+              <RefreshCcw className='refresh' onClick={()=>setRefresher(!refresher)}/> 
+              <button className='submit-btn' onClick={setProfilePicture}>Set as Profile Picture</button>
+            </div>
           </Container>
         )
       }
@@ -200,6 +205,29 @@ const Container = styled.div`
 
     .selected {
       border: 0.4rem solid #f5b039; /* Gold selected border */
+    }
+  }
+    .actions{
+      display: flex;
+      gap: 1rem;
+    }
+  .refresh{
+    width: 3rem;
+    height: 3rem;
+    font-size: 1rem;
+    background-color: #a67c52; /* Warm brown */
+    color: #fff8dc; /* Off-white text */
+    border: none;
+    padding: 0.4rem;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 0.4rem;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease, color 0.3s ease;
+
+    &:hover {
+      background-color: #f5b039; /* Gold hover */
+      color: #1a1410; /* Dark text on gold */
     }
   }
 

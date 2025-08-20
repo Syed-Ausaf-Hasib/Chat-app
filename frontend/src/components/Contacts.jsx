@@ -2,75 +2,78 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Logo from "../assets/logo.png";
+import { useNavigate } from "react-router-dom";
 
 export default function Contacts({ contacts, currentUser, changeChat }) {
-    const [currentUserName, setCurrentUserName] = useState(undefined);
-    const [currentUserImage, setCurrentUserImage] = useState(undefined);
-    const [currentSelected, setCurrentSelected] = useState(undefined);
-    useEffect(() => {
-        if (currentUser) {
-            setCurrentUserImage(currentUser.avatarImage)
-            setCurrentUserName(currentUser.username)
-        }
-        // const runThis = async ()=>{
-        //     console.log(contacts)
-        //     const data = await JSON.parse(
-        //         localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
-        //     );
-        //     setCurrentUserName(data.username);
-        //     setCurrentUserImage(data.avatarImage);
-        // }
-        // runThis()
-    }, [currentUser]);
-    const changeCurrentChat = (index, contact) => {
-        setCurrentSelected(index);
-        changeChat(contact);
-    };
-    return (
-        <>
-            {
-                changeCurrentChat && currentUserName && (
-                    <Container>
-                        <div className="brand">
-                            <img draggable={false} src={Logo} alt="logo"/>
-                            <h3>Talksy</h3>
-                        </div>
-                        <div className="contacts">
-                            {contacts.map((contact, index) => {
-                                return (
-                                    <div
-                                        key={contact._id}
-                                        className={`contact ${index === currentSelected ? "selected" : ""
-                                            }`}
-                                        onClick={() => changeCurrentChat(index, contact)}
-                                    >
-                                        <div className="avatar">
-                                            <img
-                                                draggable={false}
-                                                src={`data:image/svg+xml;base64,${contact.avatarImage}`}
-                                                alt="avatar"
-                                            />
-                                        </div>
-                                        <div className="username">
-                                            <h3>{contact.username}</h3>
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                        <div className="current-user">
-                            <div className="avatar">
-                                <img draggable={false} src={`data:image/svg+xml;base64,${currentUserImage}`} alt="Avatar" />
-                            </div>
-                            <div className="username">
-                                <h2>{currentUserName}</h2>
-                            </div>
-                        </div>
-                    </Container>
-                )
-            }
-        </>
-    );
+  const [currentUserName, setCurrentUserName] = useState(undefined);
+  const [currentUserImage, setCurrentUserImage] = useState(undefined);
+  const [currentSelected, setCurrentSelected] = useState(undefined);
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (currentUser) {
+      setCurrentUserImage(currentUser.avatarImage)
+      setCurrentUserName(currentUser.username)
+    }
+    // const runThis = async ()=>{
+    //     console.log(contacts)
+    //     const data = await JSON.parse(
+    //         localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
+    //     );
+    //     setCurrentUserName(data.username);
+    //     setCurrentUserImage(data.avatarImage);
+    // }
+    // runThis()
+  }, [currentUser]);
+  const changeCurrentChat = (index, contact) => {
+    setCurrentSelected(index);
+    changeChat(contact);
+  };
+  return (
+    <>
+      {
+        changeCurrentChat && currentUserName && (
+          <Container>
+            <div className="brand">
+              <img draggable={false} src={Logo} alt="logo" />
+              <h3>Talksy</h3>
+            </div>
+            <div className="contacts">
+              {contacts.map((contact, index) => {
+                return (
+                  <div
+                    key={contact._id}
+                    className={`contact ${index === currentSelected ? "selected" : ""
+                      }`}
+                    onClick={() => changeCurrentChat(index, contact)}
+                  >
+                    <div className="avatar">
+                      <img
+                        draggable={false}
+                        src={`data:image/svg+xml;base64,${contact.avatarImage}`}
+                        alt="avatar"
+                      />
+                    </div>
+                    <div className="username">
+                      <h3>{contact.username}</h3>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="current-user">
+              <div className="avatar">
+                <img onClick={() => navigate('/setAvatar')} draggable={false} src={`data:image/svg+xml;base64,${currentUserImage}`} alt="Avatar" />
+              </div>
+              <div className="username">
+                <h2>{currentUserName}</h2>
+              </div>
+            </div>
+          </Container>
+        )
+      }
+    </>
+  );
 }
 const Container = styled.div`
   display: grid;
@@ -160,6 +163,13 @@ const Container = styled.div`
         height: 4rem;
         max-inline-size: 100%;
         border-radius: 0.4rem;
+        cursor: pointer;
+        transition: transform 0.3s ease-in-out; // <-- Move here!
+      }
+      &:hover {
+        img {
+          transform: translateY(-0.2rem);
+        }
       }
     }
 
