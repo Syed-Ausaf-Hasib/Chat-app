@@ -8,83 +8,86 @@ import axios from "axios"
 import { loginRoute } from "../utils/APIRoutes"
 
 function Login() {
-    const navigate = useNavigate()
-    const [values, setValues] = useState({
-        username: "",
-        password: "",
-    })
-    const toastOptions = {
-        position: "bottom-right",
-        autoClose: 8000,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "dark",
-    };
-    useEffect(() => {
-        const runThis = () => {
-            if (localStorage.getItem('chat-app-user'))
-                navigate("/");
-        }
-        runThis()
-    }, [navigate]);
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        if (handleValidation()) {
-            const { username, password } = values;
-            const { data } = await axios.post(loginRoute, {
-                username,
-                password,
-            });
-
-            if (data.status === false) {
-                toast.error(data.msg, toastOptions);
-            }
-            if (data.status === true) {
-                localStorage.setItem(
-                    'chat-app-user',
-                    JSON.stringify(data.user)
-                );
-                navigate("/");
-            }
-        }
-    };
-    const handleValidation = () => {
-        const { password, username } = values;
-        if (password === "") {
-            toast.error(
-                "Email and Password are required",
-                toastOptions
-            );
-            return false;
-        } else if (username.length === "") {
-            toast.error(
-                "Email and Password are required",
-                toastOptions
-            );
-            return false;
-        }
-        return true;
-    };
-    const handleChange = (event) => {
-        setValues({ ...values, [event.target.name]: event.target.value })
+  const navigate = useNavigate()
+  const [values, setValues] = useState({
+    username: "",
+    password: "",
+  })
+  const [loading, setLoading] = useState(false);
+  const toastOptions = {
+    position: "bottom-right",
+    autoClose: 8000,
+    pauseOnHover: true,
+    draggable: true,
+    theme: "dark",
+  };
+  useEffect(() => {
+    const runThis = () => {
+      if (localStorage.getItem('chat-app-user'))
+        navigate("/");
     }
-    return (
-        <>
-            <FormContainer>
-                <form onSubmit={(event) => handleSubmit(event)}>
-                    <div className="brand">
-                        <img src={Logo} draggable={false} alt="Logo" />
-                        <h1>Talksy</h1>
-                    </div>
-                    <input type="text" placeholder='Username' name='username' onChange={(e) => handleChange(e)} min="3" />
-                    <input type="password" placeholder='Password' name='password' onChange={(e) => handleChange(e)} />
-                    <button type='submit'>Login</button>
-                    <span>Don't have an account? <Link to="/register">Register</Link></span>
-                </form>
-            </FormContainer>
-            <ToastContainer />
-        </>
-    )
+    runThis()
+  }, [navigate]);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (handleValidation()) {
+      setLoading(true); // Set loading before API call
+      const { username, password } = values;
+      try {
+        const { data } = await axios.post(loginRoute, { username, password });
+        if (data.status === false) {
+          setLoading(false); // Only unset loading on error
+          toast.error(data.msg, toastOptions);
+        } else if (data.status === true) {
+          localStorage.setItem('chat-app-user', JSON.stringify(data.user));
+          navigate("/");
+          // No need to setLoading(false) here, component will unmount
+        }
+      } catch (err) {
+        setLoading(false);
+        toast.error("Login failed. Please try again.", toastOptions);
+      }
+    }
+  };
+
+  const handleValidation = () => {
+    const { password, username } = values;
+    if (password === "") {
+      toast.error(
+        "Email and Password are required",
+        toastOptions
+      );
+      return false;
+    } else if (username.length === "") {
+      toast.error(
+        "Email and Password are required",
+        toastOptions
+      );
+      return false;
+    }
+    return true;
+  };
+  const handleChange = (event) => {
+    setValues({ ...values, [event.target.name]: event.target.value })
+  }
+  return (
+    <>
+      <FormContainer>
+        <form onSubmit={(event) => handleSubmit(event)}>
+          <div className="brand">
+            <img src={Logo} draggable={false} alt="Logo" />
+            <h1>Talksy</h1>
+          </div>
+          <input type="text" placeholder='Username' name='username' onChange={(e) => handleChange(e)} min="3" />
+          <input type="password" placeholder='Password' name='password' onChange={(e) => handleChange(e)} />
+          <button disabled={loading} type='submit'>{loading ? "Logging In..." : "Login"}</button>
+          <span>Don't have an account? <Link to="/register">Register</Link></span>
+        </form>
+      </FormContainer>
+      <ToastContainer />
+    </>
+  )
 }
 
 const FormContainer = styled.div`

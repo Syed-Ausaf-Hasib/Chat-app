@@ -8,89 +8,97 @@ import axios from "axios";
 import { registerRoute } from "../utils/APIRoutes";
 
 function Register() {
-    const navigate = useNavigate();
-    const [values, setValues] = useState({
-        username: "",
-        email: "",
-        password: "",
-        confirmPassword: ""
-    });
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [values, setValues] = useState({
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: ""
+  });
 
-    const toastOptions = {
-        position: "bottom-right",
-        autoClose: 8000,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "dark",
-    };
+  const toastOptions = {
+    position: "bottom-right",
+    autoClose: 8000,
+    pauseOnHover: true,
+    draggable: true,
+    theme: "dark",
+  };
 
-    useEffect(() => {
-        if (localStorage.getItem('chat-app-user')) {
-            navigate("/");
+  useEffect(() => {
+    if (localStorage.getItem('chat-app-user')) {
+      navigate("/");
+    }
+  }, [navigate]); // added navigate here
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (handleValidation()) {
+      setLoading(true); // Set loading before API call
+      const { email, username, password } = values;
+      try {
+        const { data } = await axios.post(registerRoute, {
+          username,
+          email,
+          password,
+        });
+
+        if (data.status === false) {
+          setLoading(false); // Only unset loading on error
+          toast.error(data.msg, toastOptions);
         }
-    }, [navigate]); // added navigate here
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        if (handleValidation()) {
-            const { email, username, password } = values;
-            const { data } = await axios.post(registerRoute, {
-                username,
-                email,
-                password,
-            });
-
-            if (data.status === false) {
-                toast.error(data.msg, toastOptions);
-            }
-            if (data.status === true) {
-                localStorage.setItem('chat-app-user', JSON.stringify(data.user));
-                navigate("/");
-            }
+        if (data.status === true) {
+          localStorage.setItem('chat-app-user', JSON.stringify(data.user));
+          navigate("/");
         }
-    };
+      } catch (err) {
+        setLoading(false);
+        toast.error("Server error. Please try again.", toastOptions);
+      }
+    }
+  };
 
-    const handleValidation = () => {
-        const { password, confirmPassword, username, email } = values;
-        if (password !== confirmPassword) {
-            toast.error("Password and confirm password should be same.", toastOptions);
-            return false;
-        } else if (username.length < 3) {
-            toast.error("Username should be greater than 3 characters.", toastOptions);
-            return false;
-        } else if (password.length < 8) {
-            toast.error("Password should be equal or greater than 8 characters.", toastOptions);
-            return false;
-        } else if (email === "") {
-            toast.error("Email is required.", toastOptions);
-            return false;
-        }
-        return true;
-    };
+  const handleValidation = () => {
+    const { password, confirmPassword, username, email } = values;
+    if (password !== confirmPassword) {
+      toast.error("Password and confirm password should be same.", toastOptions);
+      return false;
+    } else if (username.length < 3) {
+      toast.error("Username should be greater than 3 characters.", toastOptions);
+      return false;
+    } else if (password.length < 8) {
+      toast.error("Password should be equal or greater than 8 characters.", toastOptions);
+      return false;
+    } else if (email === "") {
+      toast.error("Email is required.", toastOptions);
+      return false;
+    }
+    return true;
+  };
 
-    const handleChange = (event) => {
-        setValues({ ...values, [event.target.name]: event.target.value });
-    };
+  const handleChange = (event) => {
+    setValues({ ...values, [event.target.name]: event.target.value });
+  };
 
-    return (
-        <>
-            <FormContainer>
-                <form onSubmit={handleSubmit}>
-                    <div className="brand">
-                        <img draggable={false} src={Logo} alt="Logo" />
-                        <h1>Talksy</h1>
-                    </div>
-                    <input type="text" placeholder='Username' name='username' onChange={handleChange} />
-                    <input type="email" placeholder='Email' name='email' onChange={handleChange} />
-                    <input type="password" placeholder='Password' name='password' onChange={handleChange} />
-                    <input type="password" placeholder='Confirm Password' name='confirmPassword' onChange={handleChange} />
-                    <button type='submit'>Create User</button>
-                    <span>Already have an account? <Link to="/login">Login</Link></span>
-                </form>
-            </FormContainer>
-            <ToastContainer />
-        </>
-    );
+  return (
+    <>
+      <FormContainer>
+        <form onSubmit={handleSubmit}>
+          <div className="brand">
+            <img draggable={false} src={Logo} alt="Logo" />
+            <h1>Talksy</h1>
+          </div>
+          <input type="text" placeholder='Username' name='username' onChange={handleChange} />
+          <input type="email" placeholder='Email' name='email' onChange={handleChange} />
+          <input type="password" placeholder='Password' name='password' onChange={handleChange} />
+          <input type="password" placeholder='Confirm Password' name='confirmPassword' onChange={handleChange} />
+          <button disabled={loading} type='submit'>{loading? 'Creating...' : 'Create User'}</button>
+          <span>Already have an account? <Link to="/login">Login</Link></span>
+        </form>
+      </FormContainer>
+      <ToastContainer />
+    </>
+  );
 }
 
 const FormContainer = styled.div`

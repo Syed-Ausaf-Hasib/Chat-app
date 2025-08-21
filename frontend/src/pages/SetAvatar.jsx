@@ -15,6 +15,8 @@ function SetAvatar() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedAvatar, setSelectedAvatar] = useState(undefined);
   const [refresher, setRefresher] = useState(false);
+  const [refresh, setRefresh] = useState(false);
+  const [buttonloading, setButtonLoading] = useState(false);
 
   const toastOptions = useMemo(() => ({
     position: "bottom-right",
@@ -31,6 +33,7 @@ function SetAvatar() {
   }, [navigate]);
 
   const setProfilePicture = async () => {
+    setButtonLoading(true);
     if (selectedAvatar === undefined) {
       toast.error("Please select an avatar", toastOptions);
     } else {
@@ -48,9 +51,11 @@ function SetAvatar() {
           localStorage.setItem("chat-app-user", JSON.stringify(user));
           navigate("/");
         } else {
+          setButtonLoading(false);
           toast.error("Error setting avatar. Please try again.", toastOptions);
         }
       } catch (err) {
+        setButtonLoading(false);
         toast.error("Server error. Please try again.", toastOptions);
       }
     }
@@ -58,6 +63,7 @@ function SetAvatar() {
 
   useEffect(() => {
     const fetchAvatars = async () => {
+      setRefresh(true);
       const data = [];
       for (let i = 0; i < 5; i++) {
         const response = await axios.get(`${api}/${Math.round(Math.random() * 1000)}`);
@@ -66,6 +72,7 @@ function SetAvatar() {
       }
       setAvatars(data);
       setIsLoading(false);
+      setRefresh(false);
     };
 
     fetchAvatars();
@@ -108,8 +115,8 @@ function SetAvatar() {
               }
             </div>
             <div className="actions">
-              <RefreshCcw className='refresh' onClick={()=>setRefresher(!refresher)}/> 
-              <button className='submit-btn' onClick={setProfilePicture}>Set as Profile Picture</button>
+              <RefreshCcw className={`refresh ${refresh? " disabled" : ""}`} onClick={()=>!refresh && setRefresher(!refresher)}/> 
+              <button className='submit-btn' onClick={setProfilePicture}>{buttonloading? "Setting Profile Picture...":"Set as Profile Picture"}</button>
             </div>
           </Container>
         )
@@ -229,6 +236,21 @@ const Container = styled.div`
       background-color: #f5b039; /* Gold hover */
       color: #1a1410; /* Dark text on gold */
     }
+  }
+  .refresh.disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    pointer-events: none;
+    width: 3rem;
+    height: 3rem;
+    font-size: 1rem;
+    background-color: #f5b039; /* Warm brown */
+    color: #1a1410; /* Off-white text */
+    border: none;
+    padding: 0.4rem;
+    font-weight: bold;
+    border-radius: 0.4rem;
+    text-transform: uppercase;
   }
 
   .submit-btn {
