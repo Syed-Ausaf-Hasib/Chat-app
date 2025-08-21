@@ -33,10 +33,10 @@ function SetAvatar() {
   }, [navigate]);
 
   const setProfilePicture = async () => {
-    setButtonLoading(true);
     if (selectedAvatar === undefined) {
       toast.error("Please select an avatar", toastOptions);
     } else {
+      setButtonLoading(true);
       const user = JSON.parse(localStorage.getItem("chat-app-user"));
 
       try {
